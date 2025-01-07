@@ -6,9 +6,10 @@
     <title>FRIENDS FROM 2015</title>
   </head>
   <body>
-    <form action="/app.js" method="POST">
-      <img src="images/friends.jpeg" alt="Friends" />
-      <h1>Add New Friends</h1>
+    <img src="images/friends.jpeg" alt="Friends" />
+    <h1>Add New Friends</h1>
+    <div id="currentDate"></div>
+    <div id="addFriend">
       <label for="name">Name:</label>
       <input type="text" id="name" name="name" />
       <label for="email">Email:</label>
@@ -18,8 +19,51 @@
       <button type="submit">Add Friend</button>
       <h1>Search Friends</h1>
       <label for="search">Email:</label>
+    </div>
+    <div>
+      <h2>Search</h2>
       <input type="text" id="search" name="search" />
       <button type="submit">Search</button>
-    </form>
+    </div>
+    <div id="friends-list">
+      <h2>Friends List</h2>
+      <ul>
+        <li>Friend 1</li>
+        <li>Friend 2</li>
+        <li>Friend 3</li>
+      </ul>
+    </div>
+    <script>
+      fetch("/getCurrentDate")
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("currentDate").innerText = data.currentDate;
+        });
+      ent.getElementById("add-btn").addEventListener("click", () => {
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const age = document.getElementById("age").value;
+        fetch("/addFriend", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ name, email, age }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              alert("Friend added successfully");
+              document.getElementById("name").value = "";
+              document.getElementById("email").value = "";
+              document.getElementById("age").value = "";
+              document.getElementById("friends-list").innerHTML =
+                JSON.stringify(data.friends);
+            } else {
+              alert("Error adding friend");
+            }
+          });
+      });
+    </script>
   </body>
 </html>
