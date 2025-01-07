@@ -12,6 +12,11 @@ app.get("/getCurrentDate", (req, res) => {
   res.json({ currentDate: date });
 });
 
+app.post("/public/index.html", (req, res) => {
+  const { name, email } = req.body;
+  res.json({ name, email });
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

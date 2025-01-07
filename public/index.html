@@ -3,9 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>FRIENDS FROM 2015</title>
   </head>
   <body>
-    <h1>Hello World</h1>
+    <form action="/app.js" method="POST">
+      <img src="images/friends.jpeg" alt="Friends" />
+      <h1>Add New Friends</h1>
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" />
+      <label for="email">Email:</label>
+      <input type="text" id="email" name="email" />
+      <label for="age">Age:</label>
+      <input type="text" id="age" name="age" />
+      <button type="submit">Add Friend</button>
+      <h1>Search Friends</h1>
+      <label for="search">Email:</label>
+      <input type="text" id="search" name="search" />
+      <button type="submit">Search</button>
+    </form>
   </body>
 </html>
