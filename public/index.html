@@ -5,44 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FRIENDS FROM 2015</title>
   </head>
+
   <body>
     <img src="images/friends.jpeg" alt="Friends" />
     <h1>Add New Friends</h1>
     <div id="currentDate"></div>
+
     <div id="addFriend">
       <label for="name">Name:</label>
-      <input type="text" id="name" name="name" />
+      <input type="text" id="name" placeholder="Name" />
       <label for="email">Email:</label>
-      <input type="text" id="email" name="email" />
+      <input type="text" id="email" placeholder="Email" />
       <label for="age">Age:</label>
-      <input type="text" id="age" name="age" />
-      <button type="submit">Add Friend</button>
-      <h1>Search Friends</h1>
-      <label for="search">Email:</label>
+      <input type="text" id="age" placeholder="Age" />
+      <button id="add-btn" type="button">Add</button>
     </div>
+
     <div>
       <h2>Search</h2>
-      <input type="text" id="search" name="search" />
-      <button type="submit">Search</button>
+      <input type="text" id="search" placeholder="Email" />
+      <button id="search-btn" type="button">Search</button>
     </div>
-    <div id="friends-list">
-      <h2>Friends List</h2>
-      <ul>
-        <li>Friend 1</li>
-        <li>Friend 2</li>
-        <li>Friend 3</li>
-      </ul>
+
+    <div id="friends">
+      <h2>Friends</h2>
+      <ul id="friends-list"></ul>
     </div>
+
     <script>
       fetch("/getCurrentDate")
         .then((response) => response.json())
         .then((data) => {
           document.getElementById("currentDate").innerText = data.currentDate;
-        });
-      ent.getElementById("add-btn").addEventListener("click", () => {
+        })
+        .catch((err) => console.error("Error fetching date:", err));
+
+      document.getElementById("add-btn").addEventListener("click", () => {
         const name = document.getElementById("name").value;
         const email = document.getElementById("email").value;
         const age = document.getElementById("age").value;
+
         fetch("/addFriend", {
           method: "POST",
           headers: {
@@ -53,16 +55,41 @@
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-              alert("Friend added successfully");
+              alert("Friend added successfully!");
+
               document.getElementById("name").value = "";
               document.getElementById("email").value = "";
               document.getElementById("age").value = "";
-              document.getElementById("friends-list").innerHTML =
-                JSON.stringify(data.friends);
+
+              const list = document.getElementById("friends-list");
+              list.innerHTML = "";
+              data.friends.forEach((friend) => {
+                const li = document.createElement("li");
+                li.textContent = `${friend.name} (${friend.age} years old) - ${friend.email}`;
+                list.appendChild(li);
+              });
             } else {
-              alert("Error adding friend");
+              alert("Error adding friend!");
             }
-          });
+          })
+          .catch((err) => console.error("Error:", err));
+      });
+
+      document.getElementById("search-btn").addEventListener("click", () => {
+        const email = document.getElementById("search").value;
+
+        fetch(`/searchFriend?email=${email}`)
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              alert(
+                `Friend Found: ${data.friend.name}, Age: ${data.friend.age}`
+              );
+            } else {
+              alert("Friend not found!");
+            }
+          })
+          .catch((err) => console.error("Error:", err));
       });
     </script>
   </body>
